@@ -1,0 +1,21 @@
+CÀI ĐẶT SSH SERVER CHO UBUNTU
+Update hệ thống:
+
+# sudo apt update
+
+Cài đặt ssh server
+# sudo apt install openssh-server
+
+Sau khi cài đặt xong, dịch vụ SSH sẽ tự động khởi động. Bạn có thể xác minh rằng SSH đang chạy bằng cách gỗ lệnh sau.
+
+# sudo systemctl status ssh
+
+Nếu tường lửa được bật trên hệ thống của bạn, hãy đảm bảo rằng bạn đã mở cổng SSH.
+
+# sudo ufw allow ssh
+
+Load lại tường tưởng để apply
+
+# sudo ufw reload
+
+Done

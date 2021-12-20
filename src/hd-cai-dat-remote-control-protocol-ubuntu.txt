@@ -1,0 +1,39 @@
+
+Cài đặt XRDP trên Ubuntu:
+# sudo apt install xrdp
+
+Kiểm tra xem XRDP đã được cài đặt thành công không:
+# sudo systemctl status xrdp
+
+Add chứng chỉ SSL cho XRDP tăng tính năng bảo mật:
+# sudo adduser xrdp ssl-cert
+
+Bạn cần mở cổng 3389 để cho phép các IP từ các máy khách RDP truy cập vào hệ thống ubuntu của bạn:
+# sudo ufw allow from <ip>/24 to any port 3389
+hoặc
+# sudo ufw allow 3389/tcp
+
+Sau đó khởi động lại Firewall:
+# sudo ufw reload
+# sudo ufw status
+-- Luu ý --
+cần đảm bảo ufw enbale nếu chưa chạy lệnh: 
+$ sudo ufw enable
+
+ Khởi động lại XRDP:
+# sudo systemctl restart xrdp
+
+sau đó truy cập bằng Remote Desktop Connection
+
+------ Fix Lỗi Màn Hình Đen ----
+Chỉnh sửa file startwm.sh bằng lệnh:
+# sudo nano /etc/xrdp/startwm.sh
+
+Thêm 2 dòng sau vào trước các dòng  "test -x /etc/X11/Xsession && exec /etc/X11/Xsession"
+
+unset DBUS_SESSION_BUS_ADDRESS
+unset XDG_RUNTIME_DIR
+
+ khởi động lại XRDP:
+# sudo systemctl restart xrdp
+-------------------------------------------------------------------------------------------------------------------
