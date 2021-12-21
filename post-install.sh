@@ -24,7 +24,7 @@ else
 			# 	9 "Ubuntu Restricted Extras" off
 	        #  15 "Paper GTK Theme" off
 	        #  16 "Arch Theme" off
-	        # 17 "Arc Icons" off
+	        #  17 "Arc Icons" off
 	        #  18 "Numix Icons" off
 			19 "Multiload Indicator - Theo Doi Thong So He Thong | PC Monitor Tool" off
 			20 "Pensor - Monitor Hardware Temperature" off

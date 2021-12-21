@@ -3,7 +3,7 @@
 Version=1.0
 Type=Application
 Terminal=false
-Exec=google-chrome --app=https://google.com
+Exec=bash .start_oee_monitor.sh
 Name=OEE Monitor
 Comment=Oee
 Icon=/home/nuc/Documents/oee-icon.png
