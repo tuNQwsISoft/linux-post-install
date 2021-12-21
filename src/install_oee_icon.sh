@@ -23,7 +23,7 @@ wget https://github.com/KhoaAnhVo/linux-post-install/raw/main/src/.start_oee_mon
 # tải icon về
 wget https://github.com/KhoaAnhVo/linux-post-install/raw/main/resource/oee-icon.png
 
-clear
+# clear
 # move file .desktop vào Desktop
 mv -n oee_line_monitor.desktop ~/Desktop/
 
@@ -33,6 +33,6 @@ mv -n oee-icon.png ~/
 # move file .desktop vào Desktop
 mv -n .start_oee_monitor.sh ~/
 
-rm oee_line_monitor.desktop
-rm oee-icon.png
-rm .start_oee_monitor.sh
+# rm oee_line_monitor.desktop
+# rm oee-icon.png
+# rm .start_oee_monitor.sh
