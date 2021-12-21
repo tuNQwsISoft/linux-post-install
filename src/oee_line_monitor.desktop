@@ -6,5 +6,5 @@ Terminal=false
 Exec=bash .start_oee_monitor.sh
 Name=OEE Monitor
 Comment=Oee
-Icon=/home/nuc/Documents/oee-icon.png
+Icon=/home/nuc/oee-icon.png
 
