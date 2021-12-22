@@ -14,24 +14,30 @@ else
     echo OK
 fi
 echo ${OEE_MONITOR_URL}
+
+
+rm ~/Desktop/oee_line_monitor.desktop
+rm ~/oee-icon.png
+rm ~/.start_oee_monitor.sh
+
 # tải file .desktop về
-wget https://github.com/KhoaAnhVo/linux-post-install/raw/main/src/oee_line_monitor.desktop
+wget -b -P ~/Desktop/ https://github.com/KhoaAnhVo/linux-post-install/raw/main/src/oee_line_monitor.desktop
 
 # tải script về 
-wget https://github.com/KhoaAnhVo/linux-post-install/raw/main/src/.start_oee_monitor.sh
+wget -b -P ~/ https://github.com/KhoaAnhVo/linux-post-install/raw/main/src/.start_oee_monitor.sh
 
 # tải icon về
-wget https://github.com/KhoaAnhVo/linux-post-install/raw/main/resource/oee-icon.png
+wget -b -P ~/ https://github.com/KhoaAnhVo/linux-post-install/raw/main/resource/oee-icon.png
 
 # clear
 # move file .desktop vào Desktop
-mv -n oee_line_monitor.desktop ~/Desktop/
+#mv -n oee_line_monitor.desktop ~/Desktop/
 
 # move file .desktop vào Desktop
-mv -n oee-icon.png ~/
+#mv -n oee-icon.png ~/
 
 # move file .desktop vào Desktop
-mv -n .start_oee_monitor.sh ~/
+#mv -n .start_oee_monitor.sh ~/
 
 # rm oee_line_monitor.desktop
 # rm oee-icon.png
