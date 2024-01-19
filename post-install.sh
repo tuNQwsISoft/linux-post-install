@@ -227,7 +227,7 @@ else
 				# 	echo "Installing Gulp"
 				# 	npm install gulp -g
 				# 	;;
-				28)
+				29)
 					echo "Remove any conflict Docker packages:"
 					for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
 					echo "Add Docker's official GPG key:"
@@ -247,7 +247,7 @@ else
 					echo "Verify that Docker Engine installation is successful:"
 					sudo docker run hello-world
 					;;
-				28)
+				30)
 					echo "Installing Docker Compose"
 					sudo apt-get update
  					sudo apt-get install docker-compose-plugin
