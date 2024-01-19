@@ -36,13 +36,15 @@ else
 			# 26 "Webpack - Bundle JavaScript files for usage in a browser | Dev Tool)" off
 			# 27 "Grunt - The JavaScript Task Runner | Dev Programming" off
 			# 28 "Gulp - Web Front-End" off
+			29 "Docker - Docker.io" off
+			30 "Docker Compose" off
 			)
 		choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
 		clear
 		for choice in $choices
 		do
-		    case $choice in
-	        	1)
+			case $choice in
+				1)
 					#Update and Upgrade
 					echo "Updating and Upgrading"
 					apt-get update && sudo apt-get upgrade -y
