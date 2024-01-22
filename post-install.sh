@@ -38,6 +38,7 @@ else
 			# 28 "Gulp - Web Front-End" off
 			29 "Docker - Docker.io" off
 			30 "Docker Compose" off
+			31 "Set up Dockge container" off
 			)
 		choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
 		clear
@@ -231,35 +232,48 @@ else
 				# 	;;
 				29)
 					echo "Remove any conflict Docker packages:"
-					for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
 					sleep 3
+					for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
 					echo "Add Docker's official GPG key:"
+					sleep 3
 					sudo apt-get update
 					sudo apt-get install ca-certificates curl gnupg
 					sudo install -m 0755 -d /etc/apt/keyrings
 					curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 					sudo chmod a+r /etc/apt/keyrings/docker.gpg
-					sleep 3
 					echo "Add the repository to Apt sources:"
+					sleep 3
 					echo \
 						"deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
 						$(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
 						sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 					sudo apt-get update
-					sleep 3
 					echo "Install the Docker packages:"
+					sleep 3
 					sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-					sleep 4
 					echo "Verify that Docker Engine installation is successful:"
+					sleep 4
 					sudo docker run hello-world
 					;;
 				30)
 					echo "Installing Docker Compose"
+					sleep 3
 					sudo apt-get update
  					sudo apt-get install docker-compose-plugin
-					sleep 4
 					echo "Verify Docker Compose"
+					sleep 4
 					docker compose version
+					;;
+				31)
+					echo "Start Dockge server..."
+					sleep 3
+					docker compose version
+					mkdir -p /opt/stacks /opt/dockge
+					cd /opt/dockge
+					curl https://raw.githubusercontent.com/louislam/dockge/master/compose.yaml --output compose.yaml
+					echo "Run stack..."
+					sleep 4
+					docker compose up -d
 					;;
 	    esac
 	done
