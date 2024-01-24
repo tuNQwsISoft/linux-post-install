@@ -36,9 +36,9 @@ else
 			# 26 "Webpack - Bundle JavaScript files for usage in a browser | Dev Tool)" off
 			# 27 "Grunt - The JavaScript Task Runner | Dev Programming" off
 			# 28 "Gulp - Web Front-End" off
-			29 "Docker - Docker.io" off
-			30 "Docker Compose" off
-			31 "Set up Dockge container" off
+			29 "Docker & Docker Compose" on
+			30 "Setup Dockge & Portainer - Container Management (**Require 29**)" on
+			31 "Setup Authentik (**Require 30**)" on
 			)
 		choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
 		clear
@@ -231,7 +231,7 @@ else
 				# 	npm install gulp -g
 				# 	;;
 				29)
-					echo "Remove any conflict Docker packages:"
+					echo "Remove any conflict Docker packages..."
 					sleep 3
 					for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
 					echo "Add Docker's official GPG key:"
@@ -252,19 +252,18 @@ else
 					sleep 3
 					sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 					echo "Verify that Docker Engine installation is successful:"
-					sleep 4
+					sleep 3
 					sudo docker run hello-world
-					;;
-				30)
-					echo "Installing Docker Compose"
+					sleep 4
+					echo "Installing Docker Compose..."
 					sleep 3
 					sudo apt-get update
  					sudo apt-get install docker-compose-plugin
 					echo "Verify Docker Compose"
-					sleep 4
+					sleep 3
 					docker compose version
 					;;
-				31)
+				30)
 					echo "Start Dockge server..."
 					sleep 3
 					docker compose version
@@ -274,6 +273,131 @@ else
 					echo "Run stack..."
 					sleep 4
 					docker compose up -d
+					sleep 3
+					echo "Start Portainer server..."
+					cd /opt/stacks
+					mkdir portainer && cd portainer
+					echo "version: '3'
+services:
+	portainer:
+		image: portainer/portainer-ce:latest
+		container_name: portainer
+		restart: always
+		ports:
+			- 8000:8000
+			- 9443:9443
+		volumes:
+			- /var/run/docker.sock:/var/run/docker.sock
+			- portainer_data:/data
+volumes:
+	portainer_data: null
+networks: {}" > compose.yaml
+					docker compose up -d
+					sleep 3
+					echo "Verify Portainer..."
+					docker ps | grep portainer
+					;;
+				31)
+					echo "Setup Authentik server..."
+					sleep 3
+					cd /opt/stacks
+					mkdir authentik && cd authentik
+					echo "version: '3.4'
+services:
+  postgresql:
+    image: docker.io/library/postgres:12-alpine
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 5s
+    volumes:
+      - database:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: ${PG_PASS}
+      POSTGRES_USER: ${PG_USER:-authentik}
+      POSTGRES_DB: ${PG_DB:-authentik}
+    env_file:
+      - .env
+  redis:
+    image: docker.io/library/redis:alpine
+    command: --save 60 1 --loglevel warning
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - redis-cli ping | grep PONG
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 3s
+    volumes:
+      - redis:/data
+  server:
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2023.10.5}
+    restart: unless-stopped
+    command: server
+    environment:
+      AUTHENTIK_REDIS__HOST: redis
+      AUTHENTIK_POSTGRESQL__HOST: postgresql
+      AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
+      AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
+    volumes:
+      - ./media:/media
+      - ./custom-templates:/templates
+    env_file:
+      - .env
+    ports:
+      - ${COMPOSE_PORT_HTTP:-8111}:9000
+      - ${COMPOSE_PORT_HTTPS:-8112}:9443
+    depends_on:
+      - postgresql
+      - redis
+  worker:
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2023.10.5}
+    restart: unless-stopped
+    command: worker
+    environment:
+      AUTHENTIK_REDIS__HOST: redis
+      AUTHENTIK_POSTGRESQL__HOST: postgresql
+      AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
+      AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
+    # `user: root` and the docker socket volume are optional.
+    # See more for the docker socket integration here:
+    # https://goauthentik.io/docs/outposts/integrations/docker
+    # Removing `user: root` also prevents the worker from fixing the permissions
+    # on the mounted folders, so when removing this make sure the folders have the correct UID/GID
+    # (1000:1000 by default)
+    user: root
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./media:/media
+      - ./certs:/certs
+      - ./custom-templates:/templates
+    env_file:
+      - .env
+    depends_on:
+      - postgresql
+      - redis
+volumes:
+  database:
+    driver: local
+  redis:
+    driver: local
+networks: {}" > compose.yaml
+					echo "PG_PASS=$(pwgen -s 40 1)" >> .env
+					echo "AUTHENTIK_SECRET_KEY=$(pwgen -s 50 1)" >> .env
+					echo "AUTHENTIK_ERROR_REPORTING__ENABLED=true" >> .env
+					docker compose up -d
+					sleep 3
+					echo "Verify Authentik..."
+					docker ps | grep authentik
 					;;
 	    esac
 	done
