@@ -279,18 +279,18 @@ else
 					mkdir portainer && cd portainer
 					echo "version: '3'
 services:
-	portainer:
-		image: portainer/portainer-ce:latest
-		container_name: portainer
-		restart: always
-		ports:
-			- 8000:8000
-			- 9443:9443
-		volumes:
-			- /var/run/docker.sock:/var/run/docker.sock
-			- portainer_data:/data
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: always
+    ports:
+      - 8000:8000
+      - 9443:9443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
 volumes:
-	portainer_data: null
+  portainer_data: null
 networks: {}" > compose.yaml
 					docker compose up -d
 					sleep 3
@@ -391,6 +391,8 @@ volumes:
   redis:
     driver: local
 networks: {}" > compose.yaml
+					apt install pwgen
+					rm .env
 					echo "PG_PASS=$(pwgen -s 40 1)" >> .env
 					echo "AUTHENTIK_SECRET_KEY=$(pwgen -s 50 1)" >> .env
 					echo "AUTHENTIK_ERROR_REPORTING__ENABLED=true" >> .env
