@@ -276,7 +276,8 @@ else
 					sleep 3
 					echo "Start Portainer server..."
 					cd /opt/stacks
-					mkdir portainer && cd portainer
+					mkdir portainer
+					cd portainer
 					echo "version: '3'
 services:
   portainer:
