@@ -312,7 +312,7 @@ services:
     healthcheck:
       test:
         - CMD-SHELL
-        - pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}
+        - pg_isready -d \$\${POSTGRES_DB} -U \$\${POSTGRES_USER}
       start_period: 20s
       interval: 30s
       retries: 5
@@ -320,9 +320,9 @@ services:
     volumes:
       - database:/var/lib/postgresql/data
     environment:
-      POSTGRES_PASSWORD: ${PG_PASS}
-      POSTGRES_USER: ${PG_USER:-authentik}
-      POSTGRES_DB: ${PG_DB:-authentik}
+      POSTGRES_PASSWORD: \${PG_PASS}
+      POSTGRES_USER: \${PG_USER:-authentik}
+      POSTGRES_DB: \${PG_DB:-authentik}
     env_file:
       - .env
   redis:
@@ -340,36 +340,36 @@ services:
     volumes:
       - redis:/data
   server:
-    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2023.10.5}
+    image: \${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:\${AUTHENTIK_TAG:-2023.10.5}
     restart: unless-stopped
     command: server
     environment:
       AUTHENTIK_REDIS__HOST: redis
       AUTHENTIK_POSTGRESQL__HOST: postgresql
-      AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
-      AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
-      AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
+      AUTHENTIK_POSTGRESQL__USER: \${PG_USER:-authentik}
+      AUTHENTIK_POSTGRESQL__NAME: \${PG_DB:-authentik}
+      AUTHENTIK_POSTGRESQL__PASSWORD: \${PG_PASS}
     volumes:
       - ./media:/media
       - ./custom-templates:/templates
     env_file:
       - .env
     ports:
-      - ${COMPOSE_PORT_HTTP:-8111}:9000
-      - ${COMPOSE_PORT_HTTPS:-8112}:9443
+      - \${COMPOSE_PORT_HTTP:-8111}:9000
+      - \${COMPOSE_PORT_HTTPS:-8112}:9443
     depends_on:
       - postgresql
       - redis
   worker:
-    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2023.10.5}
+    image: \${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:\${AUTHENTIK_TAG:-2023.10.5}
     restart: unless-stopped
     command: worker
     environment:
       AUTHENTIK_REDIS__HOST: redis
       AUTHENTIK_POSTGRESQL__HOST: postgresql
-      AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
-      AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
-      AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
+      AUTHENTIK_POSTGRESQL__USER: \${PG_USER:-authentik}
+      AUTHENTIK_POSTGRESQL__NAME: \${PG_DB:-authentik}
+      AUTHENTIK_POSTGRESQL__PASSWORD: \${PG_PASS}
     # `user: root` and the docker socket volume are optional.
     # See more for the docker socket integration here:
     # https://goauthentik.io/docs/outposts/integrations/docker
