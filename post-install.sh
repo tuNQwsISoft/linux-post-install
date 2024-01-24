@@ -301,7 +301,8 @@ networks: {}" > compose.yaml
 					echo "Setup Authentik server..."
 					sleep 3
 					cd /opt/stacks
-					mkdir authentik && cd authentik
+					mkdir authentik
+					cd authentik
 					echo "version: '3.4'
 services:
   postgresql:
